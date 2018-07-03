@@ -1,0 +1,23 @@
+AddDefaultCharset UTF-8
+
+#Denies access to Setting-Files.
+<FilesMatch "_(.+?)\.php$">
+Order Allow,Deny
+Deny from all
+</FilesMatch>
+
+RewriteEngine On
+
+#If it's an existing file or directory, don't rewrite it any further.
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule .* - [END,L]
+
+#If it's just missing a .php, add it.
+#Applies to: upload, find
+RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI}\.php -f
+RewriteRule ^(.*)$ $1.php [END,L]
+
+RewriteRule ^get/(.*)$ download.php?id=$1 [L,NC,QSA]
+
+RewriteRule ^rate/(.*)$ rate.php?id=$1 [L,NC,QSA]
